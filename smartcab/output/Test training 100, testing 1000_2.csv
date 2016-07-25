@@ -1,0 +1,1 @@
+n_trials,epsilon,alpha,gamma,epsilon discount,successful_trials,sum(total_rewards.values()),total_badMoves,total_trialsNoPenalty,trials_sinceFailure, trials_sincePenalty
