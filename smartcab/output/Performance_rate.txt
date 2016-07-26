@@ -1,0 +1,2 @@
+success/total = 97/99 of 1301 trials (n reward: 2230.5)
+penalties/moves (penalty rate): 38/1301 (0.03)

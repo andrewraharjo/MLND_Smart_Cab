@@ -1,1 +1,2 @@
-n_trials,epsilon,alpha,gamma,epsilon discount,successful_trials,sum(total_rewards.values()),total_badMoves,total_trialsNoPenalty,trials_sinceFailure, trials_sincePenalty
+success/total = 99/99 of 1271 trials (n reward: 2229.5)
+penalties/moves (penalty rate): 28/1271 (0.02)
