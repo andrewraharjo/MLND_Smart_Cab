@@ -82,17 +82,7 @@ Now that your driving agent is capable of moving around in the environment, your
  - Oncoming 
  - Next Waypoint
 
-
-**UPDATE- REVIEW **
-*Solid justification for your choice in states and nice discussion for the number of possible states. However for this section you should also discuss whether or not you have decided to include the deadline. Therefore since you have not, what could be some potential flaws if were were to keep track of the deadline?(Hint: Think about the possible size of this)*
-
-*Note: I would hesitate to say "Left and Right are more likely fall into the direction from LIGHT". But good justification for the omission of these. You can also note that the starter code for the project has not included penalties for right of way or interacting with other cars.*
-
-* please also briefly discuss some potential flaws if were were to keep track of the deadline?
-
-  **ANSWER**: 
-
- * *So okay, I reverted the code and observed the state with **deadline**. It gets really bad performance. My thought on this is because the Q matrix got too scattered and it affects the prediction to fail the required value in Q matrix. The best way to describe this is the Q value does not tend to meet at a point when we add the deadline into the state.*
+I reverted the code and observed the state with **deadline**. It gets really bad performance. My thought on this is because the Q matrix got too scattered and it affects the prediction to fail the required value in Q matrix. The best way to describe this is the Q value does not tend to meet at a point when we add the deadline into the state.
 
 My intuition led me into the information given from the video. I believe each of these states are appropriate for this problem. This knowledge needs to have because the agent needs to know where to go through the intersection without disrupting the traffic. The agent also needs to know what LIGHT is turning. Green to pass, Yellow to be ready and Red to STOP. If the LIGHT is green then the agent can go straight. The left turn only happens when the green arrow light is on and state of the on-coming cars. Red LIGHT, then the agent needs to turn right. This happens in order not to disrupt the ONCOMING vehicle from different sides. The agent should check the ONCOMING vehicle before deciding to go step. The NEXTWAYPOINT will lead the agent reach to the destination which this can be found from the planner instruction.
 
@@ -118,13 +108,7 @@ When we tested with random order, the agent really takes many steps to get the d
 
 I have taken deeper look from this [link](https://books.google.com/books?id=VK2eBQAAQBAJ&pg=PA106&lpg=PA106&dq=q+table+updating+rules+equation&source=bl&ots=8gVpAhAhXs&sig=ASRx7R8xKnAQCEP6krlkGCwOirI&hl=en&sa=X&ved=0ahUKEwiPs6-3oYbOAhVM4SYKHdkOD2cQ6AEIIzAB#v=onepage&q=q%20table%20updating%20rules%20equation&f=false) and found the Q-table updating rules and as well with updating [the learning rate](https://books.google.com/books?id=7syEcXuKU9QC&pg=PA185&lpg=PA185&dq=q+table+updating+rules+equation&source=bl&ots=Rnfkg-O2F4&sig=zAaG1iIIHkYx7WrEmASDjnTXnDg&hl=en&sa=X&ved=0ahUKEwjK6cjXoobOAhVD5iYKHfsSBtAQ6AEIJTAC#v=onepage&q=q%20table%20updating%20rules%20equation&f=false) then finally updated with ["simulated annealing"](https://github.com/perrygeo/simanneal) approach for choosing best action.
 
-** REVIEW ** 
-
-*I am glad that you have discussed your implementation process here. But for this section can you provide a bit more analysis on the actual behavior of the agent. Thus is the agent getting stuck at times? Going in circles? Exploring in the beginning? Learning to follow the next way point? Still receiving penalties in the early trials? Etc.. Therefore just need a bit more on some of the concrete behavior of the agent.*
-
-*Is the agent getting stuck at times? Going in circles? Exploring in the beginning? Learning to follow the next way point? Still receiving penalties in the early trials?*
-
-Well, I have observed the result and found out the agent gets into circles or loop actions and rarely reached to the target location. This happens beacuse Q-learning tries to maximize the reward when the initial rewards for all environment actions was set to 0. From the link given about [epsilon decay](http://stackoverflow.com/questions/22805872/optimal-epsilon-%CF%B5-greedy-value), I came to the conclusion that the agent should be able to get rid from infinte loop by implementing Epsilon Greedy Exploration algorithm and in the end reached the destination. I believe in this case exploring refers to the infinite loop to find the destination and the policy was to avoid the negative award. 
+I have observed the result and found out the agent gets into circles or loop actions and rarely reached to the target location. This happens beacuse Q-learning tries to maximize the reward when the initial rewards for all environment actions was set to 0. From the link given about [epsilon decay](http://stackoverflow.com/questions/22805872/optimal-epsilon-%CF%B5-greedy-value), I came to the conclusion that the agent should be able to get rid from infinte loop by implementing Epsilon Greedy Exploration algorithm and in the end reached the destination. I believe in this case exploring refers to the infinite loop to find the destination and the policy was to avoid the negative award. 
 
 
 
@@ -154,66 +138,88 @@ This task is complete once you have arrived at what you determine is the best co
 **ANSWER: **
 The agent actually gets close to finding an optimal policy to reach the destination in the minimum possible time without any penalties. We can observe this from the three states (green - None - Forward, green - left - forward and green, forward - forward). Well the optimal policy I have found by setting the gamma to 0.33 through many trials as well with the epsilon closer to 0 (in this case, epsilon sets to 0.1). I might look for second opinion about my results for defining my policy.
 
-**Here are snippet the results**
-
-('green', 'right', 'left')      ['1.00', '1.00', '1.00', '1.00']
-
-('red', None, 'left')           ['-0.52', '-0.52', '-0.06', '0.00']
-
-('green', 'left', 'left')       ['1.00', '1.00', '1.00', '1.00']
-
-('red', 'left', 'left')         ['0.20', '1.00', '1.00', '1.00']
-
-('red', 'forward', 'right')     ['1.00', '1.00', '1.00', '1.00']
-
-('green', 'forward', 'right')   ['1.00', '1.00', '1.00', '1.00']
-
-('red', 'right', 'left')        ['-0.52', '-0.52', '0.60', '1.00']
+**Here are snippet the results for the best results**
 
 **('green', None, 'forward')      ['2.13', '1.00', '1.00', '1.00']**
 
-('red', None, 'forward')        ['-0.52', '-0.52', '-0.06', '0.00']
-
-('red', 'right', 'forward')     ['-0.52', '1.00', '1.00', '1.00']
-
-('green', 'forward', 'left')    ['1.00', '1.00', '1.00', '1.00']
-
 **('green', 'left', 'forward')    ['2.01', '1.00', '1.00', '1.00']**
-
-('green', 'left', 'right')      ['0.50', '1.00', '1.00', '1.00']
-
-('red', 'forward', 'left')      ['-0.52', '1.00', '1.00', '1.00']
-
-('green', 'right', 'right')     ['0.34', '1.00', '1.00', '1.00']
-
-('red', 'right', 'right')       ['1.00', '1.00', '1.00', '1.00']
-
-('red', None, 'right')          ['-0.52', '-0.52', '2.40', '1.00']
-
-('green', None, 'right')        ['-0.06', '-0.06', '2.32', '1.00']
-
-('red', 'left', 'right')        ['-0.52', '-0.52', '1.00', '1.00']
-
-('red', 'left', 'forward')      ['-0.52', '-0.52', '-0.36', '0.01']
-
-('green', 'right', 'forward')   ['1.00', '1.00', '1.00', '1.00']
 
 **('green', 'forward', 'forward') ['2.67', '1.00', '1.00', '1.00']**
 
-('red', 'forward', 'forward')   ['-0.52', '-0.52', '0.29', '1.00']
 
-('green', None, 'left')         ['-0.06', '2.14', '1.00', '1.00']
-
-** Great idea to test and tune your alpha and gamma values(as these are definitely are the most tuned). However for this section you should also provide some justification for why you have ultimately chosen your gamma and alpha decay values of **
-
-**self.gamma = 0.33
-self.tune_alpha =1000
-self.alpha = 1/(1.1+self.trial/self.tune_alpha)**
-
-**Thus one way to systematically test and verify your experimental findings would be to provide a chart of all the parameter values that were tested and report the numerical performance such as time steps and utility values obtained. Once you find the q-learning agent with the best combination of time steps / reaching the final destination and total rewards obtained you can than justify why it might be the best optimal model.**
-
-**Note(Optional): You could also tune epsilon, try epsilon decay(see previous section), or cut off random exploration at a certain point(as we should be able to directly hone in on the best action later in the trials)**
 
 I have printed out the statistic per code review suggestion. I found out with the hardcoded (some trials and errors) brute forcing method I can come with conclusion that the success rate with alpha 0.9, gamma 0.33 and epsilon 0.1 is 97/99 of 1301 trials. This is the last run from the latest generated output with the total reward of 2230.5. With this tuning parameter, I could get 0.03 penalty rate which consider really low for improved Learning Agent. 
 
+This part, I will discuss the performance tuning. I also will explain why the conclusion comes with alpha 0.9, gamma 0.33 and epsilon 0.1. The different parameters tried and their corresponding performances are:
 
+1) Alpha : 0.5, Gamma: 0.3, Epsilon: 0.2 (First Trial)
+
+    The parameters give me results of 97/99 over 1421 trials with total reward of 2269.5. However, we can see that the penalty rate is considered high. It is 10% of the sucessful moves. Observed best policies are:
+- **('green', 'right', 'left') ['1.00', '1.00', '1.00', '1.00']**
+- **('green', 'left', 'forward') ['2.12', '1.00', '1.00', '1.00']**
+- **('green', None, 'right') ['0.40', '0.09', '2.81', '0.85']**
+- **('green', 'right', 'forward') ['2.32', '1.00', '1.00', '1.00']**
+- **('green', None, 'left') ['0.25', '2.45', '0.41', '0.69']**
+
+2) Alpha : 0.6, Gamma: 0.1, Epsilon: 0.2 (Observe Alpha and Gamma)
+    
+    The parameters give me results of 98/100 over 1552 trials with total reward of 2286.5. Barely, from this statistic, we can see that the penalty rate is way smaller than the previous parameters. It is 8% of penalty from 131/1552 trials observation. Observed best policies are:
+- **('green', 'left', 'forward') ['2.01', '1.00', '1.00', '1.00']**
+- **('green', 'right', 'forward') ['1.72', '1.00', '1.00', '1.00']**
+- **('green', 'forward', 'forward') ['1.73', '1.00', '1.00', '1.00']**
+
+3) Alpha: 0.9, Gamma: 0.1, Epsilon: 0.1 (Observe Alpha)
+    
+    The parameters give me results of 98/99 over 1379 trials with total reward of 2197.5. The total reward is smaller but look over the number of trials. We can conclude this is close to the results from parameters (2) because the penalty rate is the same which it is 8%. Observed best policies are:
+
+- ('green', 'right', 'left') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'right', 'left') ['1.00', '1.00', '1.00', '1.00']
+- **('green', 'left', 'forward') ['2.01', '1.00', '1.00', '1.00']**
+- ('green', 'left', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('green', 'right', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'right', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'left', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'left', 'forward') ['1.00', '1.00', '1.00', '1.00']
+- ('green', 'right', 'forward') ['1.00', '1.00', '1.00', '1.00']
+- **('green', 'forward', 'forward') ['2.00', '1.00', '1.00', '1.00']**
+    
+    I want to address the majority of the policies here, which one example is ('green', 'left', 'right') ['1.00', '1.00', '1.00', '1.00']. The policy starts to predict the involved upcoming cars. In simple ways, it's expecting oncoming and the agent intends to learn before the state occurs. We also can observe that the situation of oncoming doesn't happen often but the agent still tries to learn the policy. In sum, this is the main reason, I have seen several observation results with the ['1.00', '1.00', '1.00', '1.00'] metric.
+    
+4) Alpha: 0.9, Gamma: 0.33, Epsilon: 0.2 (Tune Epsilon)
+    
+    The parameters give me success rate 94/98 over 1497 trials with reward of 2253.5. This is the highest penalty rate over the observation. We observe thhat the penalty reate is higher than the previous observation which is 11%. The best policies with this parameters observed are:
+- **('green', 'right', 'left') ['0.51', '1.00', '1.00', '1.00']**
+- ('green', 'left', 'left') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'left', 'left') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'forward', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'right', 'left') ['1.00', '1.00', '1.00', '1.00']
+- **('green', None, 'forward') ['2.81', '-0.41', '0.21', '0.70']**
+- ('red', 'right', 'forward') ['1.00', '1.00', '1.00', '1.00']
+- ('green', 'forward', 'left') ['1.00', '1.00', '1.00', '1.00']
+- **('green', 'left', 'forward') ['2.77', '1.00', '1.00', '1.00']**
+- ('green', 'right', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'right', 'right') ['1.00', '1.00', '1.00', '1.00']
+- **('red', None, 'right') ['-0.05', '-0.07', '2.09', '0.71']**
+- **('green', None, 'right') ['0.44', '-0.12', '2.91', '0.97']**
+- **('red', 'left', 'right') ['-0.50', '-0.50', '2.78', '1.00']**
+- ('green', 'right', 'forward') ['1.00', '1.00', '1.00', '1.00']
+- **('green', 'forward', 'forward') ['1.90', '1.00', '0.27', '1.00']**
+- **('green', None, 'left') ['-0.05', '2.07', '0.19', '0.94']**
+    
+5) Alpha:0.9, Gamma: 0.33, Epsilon: 0.1 (Final Observation, Tune Gamma)
+
+    The parameters give me result of 100/100 over 1257 trials with total reward: 2222.0. This is the best result we can generate though its 100/100 success, we still get a lower penalty rate which 2%. The best observed policies are:
+- ('green', 'right', 'left') ['1.00', '1.00', '1.00', '1.00']
+- ('green', 'forward', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'right', 'left') ['1.00', '1.00', '1.00', '1.00']
+- **('green', None, 'forward') ['2.80', '1.00', '1.00', '1.00']**
+- ('red', 'right', 'forward') ['1.00', '1.00', '1.00', '1.00']
+- **('green', 'left', 'forward') ['1.90', '1.00', '1.00', '1.00']**
+- ('green', 'left', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('green', 'right', 'right') ['1.00', '1.00', '1.00', '1.00']
+- ('red', 'right', 'right') ['1.00', '1.00', '1.00', '1.00']
+- **('green', 'right', 'forward') ['2.49', '1.00', '1.00', '1.00']**
+- **('green', 'forward', 'forward') ['1.90', '1.00', '1.00', '1.00']**
+- **('green', None, 'left') ['-0.05', '2.92', '1.00', '1.00']**
+
+The optimal policy I can observe so far is the agent always tries to follow the rules of the road and get positive rewards when the Alpha gets closer to 1 with lower Epsilon. I compare this based on the tuning parameters and the policies. The agent intends to have short memory when Alpha gets to closer to 1 however it intends to give positive rewards after the exploration step. In this case, the agent still to observes the best route to reach the next_waypoint/ destination. Another good things I have observed, the agent tries to get within the shortest path to the next_waypoint without getting negative rewards. If we take a look closely to the discount factor (gamma), we can see that the agent learns from the previous state when the value is closer to 0. By looking at the success rate 100/100 and lowest penalty error, I can summarize the best tuning parameters are Alpha: 0.9, Gamma: 0.33 and Epsilon: 0.1. The best state is Green, None, Left.
